@@ -1,0 +1,119 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* prev;
+    Node* next;
+
+    Node(int value) : data(value), prev(nullptr), next(nullptr) {}
+};
+
+class DoublyLinkedList {
+public:
+    Node* head;
+
+    DoublyLinkedList() : head(nullptr) {}
+
+    void insertAtEnd(int value) {
+        Node* newNode = new Node(value);
+        if (!head) {
+            head = newNode;
+        } else {
+            Node* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            current->next = newNode;
+            newNode->prev = current;
+        }
+    }
+
+    void display() {
+        Node* current = head;
+        while (current) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+
+    void mergeAndSort(DoublyLinkedList& list2) {
+        if (!head || !list2.head) {
+            cerr << "One or both of the lists are empty." << endl;
+            return;
+        }
+
+        Node* current1 = head;
+        Node* current2 = list2.head;
+
+        while (current1 && current2) {
+            Node* temp1 = current1->next;
+            Node* temp2 = current2->next;
+
+            current1->next = current2;
+            current2->prev = current1;
+            current2->next = temp1;
+
+            if (temp1) {
+                temp1->prev = current2;
+            }
+
+            current1 = temp1;
+            current2 = temp2;
+        }
+
+        // Sort the merged list
+        sortList();
+    }
+
+    void sortList() {
+        if (!head || !head->next) {
+            return;
+        }
+
+        Node* current = head;
+        Node* index = nullptr;
+
+        while (current) {
+            index = current->next;
+
+            while (index) {
+                if (current->data > index->data) {
+                    swap(current->data, index->data);
+                }
+                index = index->next;
+            }
+
+            current = current->next;
+        }
+    }
+};
+
+int main() {
+    DoublyLinkedList list1, list2;
+
+    // Populate list1
+    list1.insertAtEnd(1);
+    list1.insertAtEnd(3);
+    list1.insertAtEnd(5);
+
+    // Populate list2
+    list2.insertAtEnd(2);
+    list2.insertAtEnd(4);
+    list2.insertAtEnd(6);
+
+    cout << "Doubly Linked List 1: ";
+    list1.display();
+
+    cout << "Doubly Linked List 2: ";
+    list2.display();
+
+    list1.mergeAndSort(list2);
+
+    cout << "Merged and Sorted Doubly Linked List: ";
+    list1.display();
+
+    return 0;
+}
