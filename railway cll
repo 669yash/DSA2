@@ -1,0 +1,96 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Node {
+public:
+    int seatNumber;
+    string passengerName;
+    Node* next;
+
+    Node(int seat, const string& name = "") : seatNumber(seat), passengerName(name), next(nullptr) {}
+};
+
+class CircularLinkedList {
+private:
+    Node* head;
+    Node* current;
+    int totalSeats;
+
+public:
+    CircularLinkedList(int seats) : head(nullptr), current(nullptr), totalSeats(seats) {
+        createCircularLinkedList();
+    }
+
+    void createCircularLinkedList() {
+        if (totalSeats > 0) {
+            head = new Node(1);
+            current = head;
+            for (int seatNumber = 2; seatNumber <= totalSeats; ++seatNumber) {
+                Node* newNode = new Node(seatNumber);
+                current->next = newNode;
+                current = newNode;
+            }
+            current->next = head;  // Make it circular
+        }
+    }
+
+    void displaySeats() {
+        if (head == nullptr) {
+            cout << "No seats available." << endl;
+        } else {
+            Node* temp = head;
+            do {
+                cout << "Seat " << temp->seatNumber << ": " << temp->passengerName << endl;
+                temp = temp->next;
+            } while (temp != head);
+        }
+    }
+
+    void reserveSeat(int seatNumber, const string& passengerName) {
+        Node* temp = head;
+        do {
+            if (temp->seatNumber == seatNumber && temp->passengerName.empty()) {
+                temp->passengerName = passengerName;
+                cout << "Seat " << seatNumber << " reserved for " << passengerName << "." << endl;
+                return;
+            }
+            temp = temp->next;
+        } while (temp != head);
+
+        cout << "Seat " << seatNumber << " is already reserved or does not exist." << endl;
+    }
+
+    void cancelReservation(int seatNumber) {
+        Node* temp = head;
+        do {
+            if (temp->seatNumber == seatNumber && !temp->passengerName.empty()) {
+                temp->passengerName.clear();
+                cout << "Reservation canceled for seat " << seatNumber << "." << endl;
+                return;
+            }
+            temp = temp->next;
+        } while (temp != head);
+
+        cout << "Seat " << seatNumber << " is not reserved or does not exist." << endl;
+    }
+};
+
+int main() {
+    int totalSeats = 10;
+    CircularLinkedList railwaySystem(totalSeats);
+
+    railwaySystem.displaySeats();
+
+    railwaySystem.reserveSeat(3, "John Doe");
+    railwaySystem.reserveSeat(7, "Jane Doe");
+
+    railwaySystem.displaySeats();
+
+    railwaySystem.cancelReservation(3);
+
+    railwaySystem.displaySeats();
+
+    return 0;
+}
