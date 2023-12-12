@@ -1,0 +1,101 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+const int MAX_FRIENDS = 100;
+
+struct Friend {
+    char name[50];
+    char mobileNumber[15];
+};
+
+class PhoneBook {
+private:
+    Friend friends[MAX_FRIENDS];
+    int numFriends;
+
+public:
+    PhoneBook() : numFriends(0) {}
+
+    // Function to insert a friend into the phone book
+    void insertFriend(const Friend& newFriend) {
+        int index = 0;
+        while (index < numFriends && strcmp(friends[index].name, newFriend.name) < 0) {
+            index++;
+        }
+
+        if (index == numFriends || strcmp(friends[index].name, newFriend.name) != 0) {
+            // Shift elements to make space for the new friend
+            for (int i = numFriends; i > index; --i) {
+                friends[i] = friends[i - 1];
+            }
+
+            // Insert the new friend
+            friends[index] = newFriend;
+            numFriends++;
+            cout << "Friend inserted: " << newFriend.name << endl;
+        } else {
+            cout << "Friend already exists: " << newFriend.name << endl;
+        }
+    }
+
+    // Function to search for a friend in the phone book
+    bool searchFriend(const char* name) const {
+        for (int i = 0; i < numFriends; ++i) {
+            if (strcmp(friends[i].name, name) == 0) {
+                cout << "Friend found - Name: " << friends[i].name << ", Mobile Number: " << friends[i].mobileNumber << endl;
+                return true;
+            }
+        }
+
+        cout << "Friend not found: " << name << endl;
+        return false;
+    }
+
+    // Function to display the entire phone book
+    void displayPhoneBook() const {
+        cout << "Phone Book:" << endl;
+        for (int i = 0; i < numFriends; ++i) {
+            cout << "Name: " << friends[i].name << ", Mobile Number: " << friends[i].mobileNumber << endl;
+        }
+    }
+};
+
+// Function to get user input for a friend
+Friend getFriendInput() {
+    Friend newFriend;
+    cout << "Enter friend's name: ";
+    cin.getline(newFriend.name, sizeof(newFriend.name));
+    cout << "Enter friend's mobile number: ";
+    cin.getline(newFriend.mobileNumber, sizeof(newFriend.mobileNumber));
+    return newFriend;
+}
+
+int main() {
+    PhoneBook phoneBook;
+
+    // Getting dynamic inputs for friends
+    for (int i = 0; i < 3; ++i) {
+        Friend newFriend = getFriendInput();
+        phoneBook.insertFriend(newFriend);
+    }
+
+    // Displaying the phone book
+    phoneBook.displayPhoneBook();
+
+    // Searching for friends
+    cout << "\nEnter a friend's name to search: ";
+    char searchName[50];
+    cin.getline(searchName, sizeof(searchName));
+    phoneBook.searchFriend(searchName);
+
+    // Inserting a new friend
+    Friend newFriend = getFriendInput();
+    phoneBook.insertFriend(newFriend);
+
+    // Displaying the updated phone book
+    phoneBook.displayPhoneBook();
+
+    return 0;
+}
