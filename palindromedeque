@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class SimpleDeque {
+private:
+    string data;
+
+public:
+    void push_front(char ch) {
+        data = ch + data;
+    }
+
+    void push_back(char ch) {
+        data += ch;
+    }
+
+    char pop_front() {
+        char front_char = data.front();
+        data.erase(data.begin());
+        return front_char;
+    }
+
+    char pop_back() {
+        char back_char = data.back();
+        data.pop_back();
+        return back_char;
+    }
+
+    size_t size() const {
+        return data.size();
+    }
+};
+
+bool isPalindrome(const string& input_str) {
+    SimpleDeque char_deque;
+
+    for (char ch : input_str) {
+        char_deque.push_back(tolower(ch));
+    }
+
+    while (char_deque.size() > 1) {
+        char front_char = char_deque.pop_front();
+        char rear_char = char_deque.pop_back();
+
+        if (front_char != rear_char) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+    string input_string;
+    cout << "Enter a string: ";
+    getline(cin, input_string);
+
+    bool result = isPalindrome(input_string);
+
+    if (result) {
+        cout << input_string << " is a palindrome." << endl;
+    } else {
+        cout << input_string << " is not a palindrome." << endl;
+    }
+
+    return 0;
+}
