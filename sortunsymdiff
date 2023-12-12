@@ -1,0 +1,92 @@
+#include <iostream>
+
+// Function to print the elements of an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; ++i) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+// Function to merge two sorted arrays and find the union
+int findUnion(int arr1[], int size1, int arr2[], int size2, int result[]) {
+    int i = 0, j = 0, k = 0;
+
+    while (i < size1 && j < size2) {
+        if (arr1[i] < arr2[j]) {
+            result[k++] = arr1[i++];
+        } else if (arr2[j] < arr1[i]) {
+            result[k++] = arr2[j++];
+        } else {
+            // Skip duplicates
+            result[k++] = arr1[i++];
+            j++;
+        }
+    }
+
+    // Copy the remaining elements of arr1, if any
+    while (i < size1) {
+        result[k++] = arr1[i++];
+    }
+
+    // Copy the remaining elements of arr2, if any
+    while (j < size2) {
+        result[k++] = arr2[j++];
+    }
+
+    return k; // Return the size of the result array
+}
+
+// Function to find the symmetric difference of two sorted arrays
+int findSymmetricDifference(int arr1[], int size1, int arr2[], int size2, int result[]) {
+    int i = 0, j = 0, k = 0;
+
+    while (i < size1 && j < size2) {
+        if (arr1[i] < arr2[j]) {
+            result[k++] = arr1[i++];
+        } else if (arr2[j] < arr1[i]) {
+            result[k++] = arr2[j++];
+        } else {
+            // Skip common elements
+            i++;
+            j++;
+        }
+    }
+
+    // Copy the remaining elements of arr1, if any
+    while (i < size1) {
+        result[k++] = arr1[i++];
+    }
+
+    // Copy the remaining elements of arr2, if any
+    while (j < size2) {
+        result[k++] = arr2[j++];
+    }
+
+    return k; // Return the size of the result array
+}
+
+int main() {
+    // Input arrays (assumed to be sorted)
+    int arr1[] = {1, 3, 5, 7, 9};
+    int size1 = sizeof(arr1) / sizeof(arr1[0]);
+
+    int arr2[] = {2, 4, 6, 8, 10};
+    int size2 = sizeof(arr2) / sizeof(arr2[0]);
+
+    // Find and print the union of the arrays
+    int unionResult[10]; // Assuming a maximum size for the result
+    int unionSize = findUnion(arr1, size1, arr2, size2, unionResult);
+
+    cout << "Union: ";
+    printArray(unionResult, unionSize);
+
+    // Find and print the symmetric difference of the arrays
+    int symmetricDiffResult[10]; // Assuming a maximum size for the result
+    int symmetricDiffSize = findSymmetricDifference(arr1, size1, arr2, size2, symmetricDiffResult);
+
+    cout << "Symmetric Difference: ";
+    printArray(symmetricDiffResult, symmetricDiffSize);
+
+    return 0;
+}
