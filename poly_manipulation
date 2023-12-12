@@ -1,0 +1,100 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int coefficient;
+    int exponent;
+    Node* next;
+
+    Node(int coeff, int exp) : coefficient(coeff), exponent(exp), next(nullptr) {}
+};
+
+class Polynomial {
+public:
+    Node* head;
+
+    Polynomial() : head(nullptr) {}
+
+    void addTerm(int coeff, int exp) {
+        Node* newNode = new Node(coeff, exp);
+        if (!head) {
+            head = newNode;
+        } else {
+            Node* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            current->next = newNode;
+        }
+    }
+
+    void display() {
+        Node* current = head;
+        while (current) {
+            cout << current->coefficient << "x^" << current->exponent;
+            if (current->next) {
+                cout << " + ";
+            }
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+Polynomial addPolynomials(const Polynomial& poly1, const Polynomial& poly2) {
+    Polynomial result;
+    Node* current1 = poly1.head;
+    Node* current2 = poly2.head;
+
+    while (current1 && current2) {
+        if (current1->exponent > current2->exponent) {
+            result.addTerm(current1->coefficient, current1->exponent);
+            current1 = current1->next;
+        } else if (current1->exponent < current2->exponent) {
+            result.addTerm(current2->coefficient, current2->exponent);
+            current2 = current2->next;
+        } else {
+            result.addTerm(current1->coefficient + current2->coefficient, current1->exponent);
+            current1 = current1->next;
+            current2 = current2->next;
+        }
+    }
+
+    while (current1) {
+        result.addTerm(current1->coefficient, current1->exponent);
+        current1 = current1->next;
+    }
+
+    while (current2) {
+        result.addTerm(current2->coefficient, current2->exponent);
+        current2 = current2->next;
+    }
+
+    return result;
+}
+
+int main() {
+    Polynomial poly1;
+    poly1.addTerm(3, 2);
+    poly1.addTerm(4, 1);
+    poly1.addTerm(5, 0);
+
+    Polynomial poly2;
+    poly2.addTerm(2, 2);
+    poly2.addTerm(3, 1);
+    poly2.addTerm(1, 0);
+
+    Polynomial result = addPolynomials(poly1, poly2);
+
+    cout << "Polynomial 1: ";
+    poly1.display();
+
+    cout << "Polynomial 2: ";
+    poly2.display();
+
+    cout << "Sum of Polynomials: ";
+    result.display();
+
+    return 0;
+}
