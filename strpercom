@@ -1,0 +1,59 @@
+#include <iostream>
+
+using namespace std;
+
+void swap(char &a, char &b) {
+    char temp = a;
+    a = b;
+    b = temp;
+}
+
+void generatePermutations(char str[], int start, int end) {
+    if (start == end) {
+        cout << str << endl;
+        return;
+    }
+
+    for (int i = start; i <= end; ++i) {
+        swap(str[start], str[i]);
+        generatePermutations(str, start + 1, end);
+        swap(str[start], str[i]);
+    }
+}
+
+void generateCombinations(char str[], int start, int end, char result[], int index, int length) {
+    if (length == 0) {
+        result[index] = '\0';
+        cout << result << endl;
+        return;
+    }
+
+    for (int i = start; i <= end && end - i + 1 >= length; ++i) {
+        result[index] = str[i];
+        generateCombinations(str, i + 1, end, result, index + 1, length - 1);
+    }
+}
+
+int main() {
+    const int MAX_LENGTH = 100;
+    char input[MAX_LENGTH];
+
+    cout << "Enter a string: ";
+    cin >> input;
+
+    int length = 0;
+    while (input[length] != '\0') {
+        ++length;
+    }
+
+    cout << "Permutations:" << endl;
+    generatePermutations(input, 0, length - 1);
+
+    cout << "Combinations:" << endl;
+    char result[MAX_LENGTH];
+    for (int len = 1; len <= length; ++len) {
+        generateCombinations(input, 0, length - 1, result, 0, len);
+    }
+
+    return 0;
+}
