@@ -1,0 +1,91 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Define a structure for representing a patient appointment
+struct PatientAppointment {
+    string patientName;
+    int urgencyLevel;
+};
+
+// Function to enqueue an appointment into the priority queue
+void enqueue(PatientAppointment* &queue, int& size, const PatientAppointment& appointment) {
+    // Increase the size of the array
+    ++size;
+
+    // Create a new array with increased size
+    PatientAppointment* newQueue = new PatientAppointment[size];
+
+    // Copy existing elements to the new array
+    for (int i = 0; i < size - 1; ++i) {
+        newQueue[i] = queue[i];
+    }
+
+    // Add the new appointment to the end of the array
+    newQueue[size - 1] = appointment;
+
+    // Delete the old array
+    delete[] queue;
+
+    // Update the pointer to the new array
+    queue = newQueue;
+}
+
+// Function to dequeue the highest priority appointment from the priority queue
+PatientAppointment dequeue(PatientAppointment* &queue, int& size) {
+    if (size == 0) {
+        // Return a default appointment if the queue is empty
+        return {"", 0};
+    }
+
+    // Find the index of the highest priority appointment
+    int maxIndex = 0;
+    for (int i = 1; i < size; ++i) {
+        if (queue[i].urgencyLevel > queue[maxIndex].urgencyLevel) {
+            maxIndex = i;
+        }
+    }
+
+    // Get the highest priority appointment
+    PatientAppointment result = queue[maxIndex];
+
+    // Remove the appointment by shifting the remaining elements
+    for (int i = maxIndex; i < size - 1; ++i) {
+        queue[i] = queue[i + 1];
+    }
+
+    // Decrease the size of the array
+    --size;
+
+    return result;
+}
+
+int main() {
+    // Dynamic array to store patient appointments
+    PatientAppointment* appointmentArray = nullptr;
+    int arraySize = 0;
+
+    // Example appointments
+    PatientAppointment appointment1{"John Doe", 2};
+    PatientAppointment appointment2{"Jane Doe", 1};
+    PatientAppointment appointment3{"Alice Smith", 3};
+
+    // Enqueue appointments
+    enqueue(appointmentArray, arraySize, appointment1);
+    enqueue(appointmentArray, arraySize, appointment2);
+    enqueue(appointmentArray, arraySize, appointment3);
+
+    // Dequeue and process appointments based on priority
+    while (arraySize > 0) {
+        PatientAppointment nextAppointment = dequeue(appointmentArray, arraySize);
+
+        // Process the appointment (in this example, just printing the patient name)
+        cout << "Processing appointment for " << nextAppointment.patientName << endl;
+    }
+
+    // Clean up the dynamic array
+    delete[] appointmentArray;
+
+    return 0;
+}
